@@ -8,11 +8,21 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
+    initializeFeatherIcons();
     initializeFormValidation();
     initializeFileUpload();
     initializeCharacterCounters();
     initializeCopyButtons();
     initializeScrollToResults();
+}
+
+/**
+ * Initialize Feather Icons
+ */
+function initializeFeatherIcons() {
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
 }
 
 /**

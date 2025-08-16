@@ -1,36 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <meta name="description" content="Register for SEO Generator - Professional SEO asset generator">
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/auth.css">
-    <link rel="icon" type="image/png" href="/favicon.png">
-</head>
-<body>
-    <!-- Include Shared Header -->
-    <% var subtitle = 'Create your account and get 10 free credits'; %>
-    <%- include('../partials/header') %>
+<% var subtitle = 'Create your account and get 10 free credits'; %>
 
-    <div class="auth-container">
+<link rel="stylesheet" href="/css/auth.css">
+
+<div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <h1 class="auth-title">🚀 Join SEO Generator</h1>
+                <h1 class="auth-title"><i data-feather="user-plus" class="auth-title-icon"></i> Join SEO Generator</h1>
                 <p class="auth-subtitle">Create your account and get 10 free credits</p>
             </div>
 
             <% if (error) { %>
                 <div class="auth-error">
-                    <span class="error-icon">⚠️</span>
+                    <i data-feather="alert-triangle" class="error-icon"></i>
                     <%= error %>
                 </div>
             <% } %>
 
             <% if (success) { %>
                 <div class="auth-success">
-                    <span class="success-icon">✅</span>
+                    <i data-feather="check-circle" class="success-icon"></i>
                     <%= success %>
                 </div>
             <% } %>
@@ -95,17 +83,17 @@
                 </div>
 
                 <div class="auth-benefits">
-                    <h3>🎁 What you get:</h3>
+                    <h3><i data-feather="gift" class="benefits-icon"></i> What you get:</h3>
                     <ul>
-                        <li>✅ 10 free credits to start</li>
-                        <li>✅ AI-powered description enhancement</li>
-                        <li>✅ Professional SEO asset generation</li>
-                        <li>✅ Usage history tracking</li>
+                        <li><i data-feather="check" class="benefit-check"></i> 10 free credits to start</li>
+                        <li><i data-feather="check" class="benefit-check"></i> AI-powered description enhancement</li>
+                        <li><i data-feather="check" class="benefit-check"></i> Professional SEO asset generation</li>
+                        <li><i data-feather="check" class="benefit-check"></i> Usage history tracking</li>
                     </ul>
                 </div>
 
                 <button type="submit" class="auth-button">
-                    <span class="button-icon">✨</span>
+                    <i data-feather="user-plus" class="button-icon"></i>
                     Create Account
                 </button>
             </form>
@@ -116,8 +104,3 @@
             </div>
         </div>
     </div>
-
-    <!-- Include Shared Footer -->
-    <%- include('../partials/footer') %>
-</body>
-</html>

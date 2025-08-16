@@ -1,481 +1,458 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <meta name="description" content="Professional SEO asset generator - Create meta tags, icons, and code snippets for your website">
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="icon" type="image/png" href="/favicon.png">
-</head>
-<body>
-    <div class="container">
-        <!-- Include Shared Header -->
-        <%- include('./partials/header') %>
+<!-- Welcome Message -->
+<% if (welcome && user) { %>
+    <section class="welcome-section">
+        <div class="welcome-message">
+            <i data-feather="gift" class="welcome-icon"></i>
+            <h2>Welcome to SEO Generator, <%= user.username %>!</h2>
+            <p>You have <strong><%= user.credits %> credits</strong> to start with. Each AI enhancement costs 1 credit.</p>
+        </div>
+    </section>
+<% } %>
 
-        <main class="main">
-            <!-- Welcome Message -->
-            <% if (welcome && user) { %>
-                <section class="welcome-section">
-                    <div class="welcome-message">
-                        <span class="welcome-icon">🎉</span>
-                        <h2>Welcome to SEO Generator, <%= user.username %>!</h2>
-                        <p>You have <strong><%= user.credits %> credits</strong> to start with. Each AI enhancement costs 1 credit.</p>
-                    </div>
-                </section>
-            <% } %>
-
-            <!-- Input Form -->
-            <section class="form-section">
-                <h2 class="section-title">Website Information</h2>
-                
-                <form action="/generate" method="post" enctype="multipart/form-data" class="seo-form">
-                    <div class="form-group">
-                        <label for="siteTitle" class="form-label">
-                            <span class="label-text">Site Title</span>
-                            <span class="label-required">*</span>
-                        </label>
-                        <input 
-                            type="text" 
-                            id="siteTitle" 
-                            name="siteTitle" 
-                            class="form-input" 
-                            placeholder="e.g., My Awesome Website"
-                            maxlength="60"
-                            required
-                        >
-                        <div class="form-hint">Recommended: 50-60 characters for optimal SEO</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="siteDescription" class="form-label">
-                            <span class="label-text">Site Description</span>
-                            <span class="label-required">*</span>
-                        </label>
-                        <div class="description-container">
-                            <textarea 
-                                id="siteDescription" 
-                                name="siteDescription" 
-                                class="form-textarea" 
-                                placeholder="A brief description of what your website offers..."
-                                maxlength="160"
-                                rows="3"
-                                required
-                            ></textarea>
-                            <button type="button" id="enhanceBtn" class="enhance-button">
-                                <span class="button-icon">✨</span>
-                                Enhance with AI
-                                <% if (user) { %>
-                                    <span class="credit-cost">(1 credit)</span>
-                                <% } %>
-                            </button>
-                        </div>
-                        <div id="enhancementContainer" class="enhancement-container" style="display: none;">
-                            <div class="enhancement-header">
-                                <h4>AI Enhanced Description:</h4>
-                                <div class="enhancement-controls">
-                                    <button type="button" id="useEnhancedBtn" class="use-enhanced-button">Use Enhanced</button>
-                                    <button type="button" id="useOriginalBtn" class="use-original-button">Use Original</button>
-                                </div>
-                            </div>
-                            <div id="enhancedDescription" class="enhanced-description"></div>
-                            <div id="originalDescription" class="original-description"></div>
-                        </div>
-                        <div class="form-hint">Recommended: 120-160 characters for search engine snippets</div>
-                        <div id="enhancementStatus" class="enhancement-status"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="websiteUrl" class="form-label">
-                            <span class="label-text">Website URL</span>
-                            <span class="label-required">*</span>
-                        </label>
-                        <input 
-                            type="url" 
-                            id="websiteUrl" 
-                            name="websiteUrl" 
-                            class="form-input" 
-                            placeholder="e.g., https://yourwebsite.com"
-                            required
-                        >
-                        <div class="form-hint">Your website's main URL (include https://)</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="siteLinks" class="form-label">
-                            <span class="label-text">Site Links</span>
-                            <span class="label-optional">(Optional)</span>
-                        </label>
-                        <textarea 
-                            id="siteLinks" 
-                            name="siteLinks" 
-                            class="form-textarea" 
-                            placeholder="Enter each page URL on a new line:&#10;https://yourwebsite.com/about&#10;https://yourwebsite.com/services&#10;https://yourwebsite.com/contact"
-                            rows="5"
-                        ></textarea>
-                        <div class="form-hint">Add important pages for your sitemap (one URL per line). These will be included in the generated sitemap.xml</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="siteIcon" class="form-label">
-                            <span class="label-text">Site Icon</span>
-                            <span class="label-optional">(Optional)</span>
-                        </label>
-                        <div class="file-upload-wrapper">
-                            <input 
-                                type="file" 
-                                id="siteIcon" 
-                                name="siteIcon" 
-                                class="form-file" 
-                                accept="image/jpeg,image/jpg,image/png,image/svg+xml"
-                            >
-                            <label for="siteIcon" class="file-upload-label">
-                                <span class="file-upload-text">Choose image file</span>
-                                <span class="file-upload-button">Browse</span>
-                            </label>
-                        </div>
-                        <div class="form-hint">Supported: PNG, JPG, SVG (max 5MB). Will generate favicons, app icons, and social media images.</div>
-                    </div>
-
-                    <button type="submit" class="submit-button">
-                        <span class="button-icon">⚡</span>
-                        Generate SEO Assets
-                    </button>
-                </form>
-            </section>
-
-            <!-- Error Display -->
-            <% if (error) { %>
-                <section class="error-section">
-                    <div class="error-message">
-                        <span class="error-icon">⚠️</span>
-                        <%= error %>
-                    </div>
-                </section>
-            <% } %>
-
-            <!-- Results Display -->
-            <% if (result) { %>
-                <section class="results-section">
-                    <div class="results-header">
-                        <h2 class="section-title">Generated SEO Assets</h2>
-                        <button onclick="downloadAllAssets()" class="download-button">
-                            <span class="button-icon">📦</span>
-                            Download All Assets (.zip)
-                        </button>
-                    </div>
-                    
-                    <!-- Summary -->
-                    <div class="result-summary">
-                        <h3>📊 Summary</h3>
-                        <div class="summary-grid">
-                            <div class="summary-item">
-                                <span class="summary-label">Title:</span>
-                                <span class="summary-value"><%= result.title %></span>
-                            </div>
-                            <div class="summary-item">
-                                <span class="summary-label">Description:</span>
-                                <span class="summary-value"><%= result.description %></span>
-                            </div>
-                            <% if (result.iconData) { %>
-                                <div class="summary-item">
-                                    <span class="summary-label">Icons Generated:</span>
-                                    <span class="summary-value"><%= result.iconData.icons.length %> formats</span>
-                                </div>
-                            <% } %>
-                            <div class="summary-item">
-                                <span class="summary-label">Generated:</span>
-                                <span class="summary-value"><%= new Date(result.timestamp).toLocaleString() %></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Code Snippets -->
-                    <div class="code-sections">
-                        <!-- Basic Meta Tags -->
-                        <div class="code-section">
-                            <h3 class="code-title">
-                                <span class="code-icon">🏷️</span>
-                                Basic Meta Tags
-                            </h3>
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyToClipboard('meta-tags')">Copy</button>
-                                <pre id="meta-tags"><code><% result.metaTags.forEach(tag => { %><%= tag %>
-<% }) %></code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Open Graph Tags -->
-                        <div class="code-section">
-                            <h3 class="code-title">
-                                <span class="code-icon">📱</span>
-                                Open Graph (Social Media)
-                            </h3>
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyToClipboard('og-tags')">Copy</button>
-                                <pre id="og-tags"><code><% result.openGraphTags.forEach(tag => { %><%= tag %>
-<% }) %></code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Twitter Cards -->
-                        <div class="code-section">
-                            <h3 class="code-title">
-                                <span class="code-icon">🐦</span>
-                                Twitter Cards
-                            </h3>
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyToClipboard('twitter-tags')">Copy</button>
-                                <pre id="twitter-tags"><code><% result.twitterTags.forEach(tag => { %><%= tag %>
-<% }) %></code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Structured Data -->
-                        <div class="code-section">
-                            <h3 class="code-title">
-                                <span class="code-icon">🔗</span>
-                                Structured Data (JSON-LD)
-                            </h3>
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyToClipboard('structured-data')">Copy</button>
-                                <pre id="structured-data"><code><%= result.structuredData %></code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Complete HTML -->
-                        <div class="code-section">
-                            <h3 class="code-title">
-                                <span class="code-icon">📄</span>
-                                Complete HTML Head
-                            </h3>
-                            <div class="code-block">
-                                <button class="copy-button" onclick="copyToClipboard('html-head')">Copy</button>
-                                <pre id="html-head"><code><%= result.htmlHead %></code></pre>
-                            </div>
-                        </div>
-
-                        <!-- Generated Files -->
-                        <div class="code-section">
-                            <h3 class="code-title">
-                                <span class="code-icon">📁</span>
-                                Additional Files
-                            </h3>
-                            <div class="file-links">
-                                <% 
-                                    const sessionPath = result.sessionId ? `/generated/sessions/${result.sessionId}` : '/generated';
-                                %>
-                                <a href="<%= sessionPath %>/robots.txt" target="_blank" class="file-link">
-                                    <span class="file-icon">🤖</span>
-                                    robots.txt
-                                </a>
-                                <a href="<%= sessionPath %>/sitemap.xml" target="_blank" class="file-link">
-                                    <span class="file-icon">🗺️</span>
-                                    sitemap.xml
-                                </a>
-                                <% if (result.iconData && result.iconData.webManifest) { %>
-                                    <a href="<%= sessionPath %>/site.webmanifest" target="_blank" class="file-link">
-                                        <span class="file-icon">📱</span>
-                                        site.webmanifest
-                                    </a>
-                                <% } %>
-                                <% if (result.iconData && result.iconData.browserConfig) { %>
-                                    <a href="<%= sessionPath %>/browserconfig.xml" target="_blank" class="file-link">
-                                        <span class="file-icon">🪟</span>
-                                        browserconfig.xml
-                                    </a>
-                                <% } %>
-                            </div>
-                        </div>
-
-                        <!-- Generated Icons -->
-                        <% if (result.iconData && result.iconData.icons) { %>
-                            <div class="code-section">
-                                <h3 class="code-title">
-                                    <span class="code-icon">🎨</span>
-                                    Generated Icons
-                                </h3>
-                                <div class="icon-grid">
-                                    <% result.iconData.icons.forEach(icon => { %>
-                                        <div class="icon-item">
-                                            <img src="<%= icon.href %>" alt="<%= icon.name %>" class="icon-preview">
-                                            <div class="icon-info">
-                                                <div class="icon-name"><%= icon.name %></div>
-                                                <div class="icon-size"><%= icon.sizes %></div>
-                                            </div>
-                                        </div>
-                                    <% }) %>
-                                </div>
-                            </div>
-                        <% } %>
-                    </div>
-                </section>
-            <% } %>
-        </main>
-
-        <!-- Include Shared Footer -->
-        <%- include('./partials/footer') %>
-    </div>
-
-    <script src="/js/main.js"></script>
+<!-- Input Form -->
+<section class="form-section">
+    <h2 class="section-title">Website Information</h2>
     
-    <script>
-        // User data for JavaScript
-        window.user = <%- user ? JSON.stringify(user) : 'null' %>;
+    <form action="/generate" method="post" enctype="multipart/form-data" class="seo-form">
+        <div class="form-group">
+            <label for="siteTitle" class="form-label">
+                <span class="label-text">Site Title</span>
+                <span class="label-required">*</span>
+            </label>
+            <input 
+                type="text" 
+                id="siteTitle" 
+                name="siteTitle" 
+                class="form-input" 
+                placeholder="e.g., My Awesome Website"
+                maxlength="60"
+                required
+            >
+            <div class="form-hint">Recommended: 50-60 characters for optimal SEO</div>
+        </div>
+
+        <div class="form-group">
+            <label for="siteDescription" class="form-label">
+                <span class="label-text">Site Description</span>
+                <span class="label-required">*</span>
+            </label>
+            <div class="description-container">
+                <textarea 
+                    id="siteDescription" 
+                    name="siteDescription" 
+                    class="form-textarea" 
+                    placeholder="A brief description of what your website offers..."
+                    maxlength="160"
+                    rows="3"
+                    required
+                ></textarea>
+                <button type="button" id="enhanceBtn" class="enhance-button">
+                    <i data-feather="zap" class="button-icon"></i>
+                    Enhance with AI
+                    <% if (user) { %>
+                        <span class="credit-cost">(1 credit)</span>
+                    <% } %>
+                </button>
+            </div>
+            <div id="enhancementContainer" class="enhancement-container" style="display: none;">
+                <div class="enhancement-header">
+                    <h4>AI Enhanced Description:</h4>
+                    <div class="enhancement-controls">
+                        <button type="button" id="useEnhancedBtn" class="use-enhanced-button">Use Enhanced</button>
+                        <button type="button" id="useOriginalBtn" class="use-original-button">Use Original</button>
+                    </div>
+                </div>
+                <div id="enhancedDescription" class="enhanced-description"></div>
+                <div id="originalDescription" class="original-description"></div>
+            </div>
+            <div class="form-hint">Recommended: 120-160 characters for search engine snippets</div>
+            <div id="enhancementStatus" class="enhancement-status"></div>
+        </div>
+
+        <div class="form-group">
+            <label for="websiteUrl" class="form-label">
+                <span class="label-text">Website URL</span>
+                <span class="label-required">*</span>
+            </label>
+            <input 
+                type="url" 
+                id="websiteUrl" 
+                name="websiteUrl" 
+                class="form-input" 
+                placeholder="e.g., https://yourwebsite.com"
+                required
+            >
+            <div class="form-hint">Your website's main URL (include https://)</div>
+        </div>
+
+        <div class="form-group">
+            <label for="siteLinks" class="form-label">
+                <span class="label-text">Site Links</span>
+                <span class="label-optional">(Optional)</span>
+            </label>
+            <textarea 
+                id="siteLinks" 
+                name="siteLinks" 
+                class="form-textarea" 
+                placeholder="Enter each page URL on a new line:&#10;https://yourwebsite.com/about&#10;https://yourwebsite.com/services&#10;https://yourwebsite.com/contact"
+                rows="5"
+            ></textarea>
+            <div class="form-hint">Add important pages for your sitemap (one URL per line). These will be included in the generated sitemap.xml</div>
+        </div>
+
+        <div class="form-group">
+            <label for="siteIcon" class="form-label">
+                <span class="label-text">Site Icon</span>
+                <span class="label-optional">(Optional)</span>
+            </label>
+            <div class="file-upload-wrapper">
+                <input 
+                    type="file" 
+                    id="siteIcon" 
+                    name="siteIcon" 
+                    class="form-file" 
+                    accept="image/jpeg,image/jpg,image/png,image/svg+xml"
+                >
+                <label for="siteIcon" class="file-upload-label">
+                    <span class="file-upload-text">Choose image file</span>
+                    <span class="file-upload-button">Browse</span>
+                </label>
+            </div>
+            <div class="form-hint">Supported: PNG, JPG, SVG (max 5MB). Will generate favicons, app icons, and social media images.</div>
+        </div>
+
+        <button type="submit" class="submit-button">
+            <i data-feather="play" class="button-icon"></i>
+            Generate SEO Assets
+        </button>
+    </form>
+</section>
+
+<!-- Error Display -->
+<% if (error) { %>
+    <section class="error-section">
+        <div class="error-message">
+            <i data-feather="alert-triangle" class="error-icon"></i>
+            <%= error %>
+        </div>
+    </section>
+<% } %>
+
+<!-- Results Display -->
+<% if (result) { %>
+    <section class="results-section">
+        <div class="results-header">
+            <h2 class="section-title">Generated SEO Assets</h2>
+            <button onclick="downloadAllAssets()" class="download-button">
+                <i data-feather="download" class="button-icon"></i>
+                Download All Assets (.zip)
+            </button>
+        </div>
         
-        // AI Description Enhancement functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const enhanceBtn = document.getElementById('enhanceBtn');
-            const enhancementContainer = document.getElementById('enhancementContainer');
-            const enhancedDescriptionDiv = document.getElementById('enhancedDescription');
-            const originalDescriptionDiv = document.getElementById('originalDescription');
-            const useEnhancedBtn = document.getElementById('useEnhancedBtn');
-            const useOriginalBtn = document.getElementById('useOriginalBtn');
-            const descriptionTextarea = document.getElementById('siteDescription');
-            const enhancementStatus = document.getElementById('enhancementStatus');
-            
-            let originalDescription = '';
-            let enhancedDescription = '';
-            
-            enhanceBtn.addEventListener('click', async function() {
-                const description = descriptionTextarea.value.trim();
-                
-                if (!description) {
-                    showEnhancementStatus('Please enter a description first', 'error');
-                    return;
-                }
-                
-                // Show loading state
-                enhanceBtn.disabled = true;
-                enhanceBtn.innerHTML = `
-                    <span class="loading-spinner"></span>
-                    Enhancing...
-                `;
-                showEnhancementStatus('Enhancing your description with AI...', 'loading');
-                
-                try {
-                    const response = await fetch('/enhance-description', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ description: description })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.success) {
-                        originalDescription = data.originalDescription;
-                        enhancedDescription = data.enhancedDescription;
-                        
-                        // Show the enhancement results
-                        originalDescriptionDiv.innerHTML = `
-                            <div class="description-preview original">
-                                <h5>Original:</h5>
-                                <p>${originalDescription}</p>
-                                <small>${originalDescription.length}/160 characters</small>
+        <!-- Summary -->
+        <div class="result-summary">
+            <h3><i data-feather="bar-chart-2" class="summary-icon"></i> Summary</h3>
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <span class="summary-label">Title:</span>
+                    <span class="summary-value"><%= result.title %></span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Description:</span>
+                    <span class="summary-value"><%= result.description %></span>
+                </div>
+                <% if (result.iconData) { %>
+                    <div class="summary-item">
+                        <span class="summary-label">Icons Generated:</span>
+                        <span class="summary-value"><%= result.iconData.icons.length %> formats</span>
+                    </div>
+                <% } %>
+                <div class="summary-item">
+                    <span class="summary-label">Generated:</span>
+                    <span class="summary-value"><%= new Date(result.timestamp).toLocaleString() %></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Snippets -->
+        <div class="code-sections">
+            <!-- Basic Meta Tags -->
+            <div class="code-section">
+                <h3 class="code-title">
+                    <i data-feather="tag" class="code-icon"></i>
+                    Basic Meta Tags
+                </h3>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyToClipboard('meta-tags')">Copy</button>
+                    <pre id="meta-tags"><code><% result.metaTags.forEach(tag => { %><%= tag %>
+<% }) %></code></pre>
+                </div>
+            </div>
+
+            <!-- Open Graph Tags -->
+            <div class="code-section">
+                <h3 class="code-title">
+                    <i data-feather="smartphone" class="code-icon"></i>
+                    Open Graph (Social Media)
+                </h3>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyToClipboard('og-tags')">Copy</button>
+                    <pre id="og-tags"><code><% result.openGraphTags.forEach(tag => { %><%= tag %>
+<% }) %></code></pre>
+                </div>
+            </div>
+
+            <!-- Twitter Cards -->
+            <div class="code-section">
+                <h3 class="code-title">
+                    <i data-feather="twitter" class="code-icon"></i>
+                    Twitter Cards
+                </h3>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyToClipboard('twitter-tags')">Copy</button>
+                    <pre id="twitter-tags"><code><% result.twitterTags.forEach(tag => { %><%= tag %>
+<% }) %></code></pre>
+                </div>
+            </div>
+
+            <!-- Structured Data -->
+            <div class="code-section">
+                <h3 class="code-title">
+                    <i data-feather="link" class="code-icon"></i>
+                    Structured Data (JSON-LD)
+                </h3>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyToClipboard('structured-data')">Copy</button>
+                    <pre id="structured-data"><code><%= result.structuredData %></code></pre>
+                </div>
+            </div>
+
+            <!-- Complete HTML -->
+            <div class="code-section">
+                <h3 class="code-title">
+                    <i data-feather="file-text" class="code-icon"></i>
+                    Complete HTML Head
+                </h3>
+                <div class="code-block">
+                    <button class="copy-button" onclick="copyToClipboard('html-head')">Copy</button>
+                    <pre id="html-head"><code><%= result.htmlHead %></code></pre>
+                </div>
+            </div>
+
+            <!-- Generated Files -->
+            <div class="code-section">
+                <h3 class="code-title">
+                    <i data-feather="folder" class="code-icon"></i>
+                    Additional Files
+                </h3>
+                <div class="file-links">
+                    <% 
+                        const sessionPath = result.sessionId ? `/generated/sessions/${result.sessionId}` : '/generated';
+                    %>
+                    <a href="<%= sessionPath %>/robots.txt" target="_blank" class="file-link">
+                        <i data-feather="settings" class="file-icon"></i>
+                        robots.txt
+                    </a>
+                    <a href="<%= sessionPath %>/sitemap.xml" target="_blank" class="file-link">
+                        <i data-feather="map" class="file-icon"></i>
+                        sitemap.xml
+                    </a>
+                    <% if (result.iconData && result.iconData.webManifest) { %>
+                        <a href="<%= sessionPath %>/site.webmanifest" target="_blank" class="file-link">
+                            <i data-feather="smartphone" class="file-icon"></i>
+                            site.webmanifest
+                        </a>
+                    <% } %>
+                    <% if (result.iconData && result.iconData.browserConfig) { %>
+                        <a href="<%= sessionPath %>/browserconfig.xml" target="_blank" class="file-link">
+                            <i data-feather="monitor" class="file-icon"></i>
+                            browserconfig.xml
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Generated Icons -->
+            <% if (result.iconData && result.iconData.icons) { %>
+                <div class="code-section">
+                    <h3 class="code-title">
+                        <i data-feather="image" class="code-icon"></i>
+                        Generated Icons
+                    </h3>
+                    <div class="icon-grid">
+                        <% result.iconData.icons.forEach(icon => { %>
+                            <div class="icon-item">
+                                <img src="<%= icon.href %>" alt="<%= icon.name %>" class="icon-preview">
+                                <div class="icon-info">
+                                    <div class="icon-name"><%= icon.name %></div>
+                                    <div class="icon-size"><%= icon.sizes %></div>
+                                </div>
                             </div>
-                        `;
-                        
-                        enhancedDescriptionDiv.innerHTML = `
-                            <div class="description-preview enhanced">
-                                <h5>AI Enhanced:</h5>
-                                <p>${enhancedDescription}</p>
-                                <small>${enhancedDescription.length}/160 characters</small>
-                            </div>
-                        `;
-                        
-                        enhancementContainer.style.display = 'block';
-                        showEnhancementStatus('Description enhanced successfully!', 'success');
-                        
-                        // Update credits display if available
-                        if (data.remainingCredits !== undefined) {
-                            const creditsElement = document.querySelector('.credits-count');
-                            if (creditsElement) {
-                                creditsElement.textContent = data.remainingCredits;
-                            }
-                        }
-                        
-                    } else {
-                        throw new Error(data.error || 'Enhancement failed');
-                    }
-                    
-                } catch (error) {
-                    console.error('Enhancement error:', error);
-                    showEnhancementStatus('Failed to enhance description: ' + error.message, 'error');
-                } finally {
-                    // Reset button
-                    enhanceBtn.disabled = false;
-                    const creditText = window.user ? ' (1 credit)' : '';
-                    enhanceBtn.innerHTML = `
-                        <span class="button-icon">✨</span>
-                        Enhance with AI${creditText}
-                    `;
-                }
-            });
+                        <% }) %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </section>
+<% } %>
+
+<script>
+    // User data for JavaScript
+    window.user = <%- user ? JSON.stringify(user) : 'null' %>;
+    
+    // AI Description Enhancement functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const enhanceBtn = document.getElementById('enhanceBtn');
+        const enhancementContainer = document.getElementById('enhancementContainer');
+        const enhancedDescriptionDiv = document.getElementById('enhancedDescription');
+        const originalDescriptionDiv = document.getElementById('originalDescription');
+        const useEnhancedBtn = document.getElementById('useEnhancedBtn');
+        const useOriginalBtn = document.getElementById('useOriginalBtn');
+        const descriptionTextarea = document.getElementById('siteDescription');
+        const enhancementStatus = document.getElementById('enhancementStatus');
+        
+        let originalDescription = '';
+        let enhancedDescription = '';
+        
+        enhanceBtn.addEventListener('click', async function() {
+            const description = descriptionTextarea.value.trim();
             
-            useEnhancedBtn.addEventListener('click', function() {
-                descriptionTextarea.value = enhancedDescription;
-                enhancementContainer.style.display = 'none';
-                showEnhancementStatus('Using AI enhanced description', 'success');
-                // Trigger input event to update any validators
-                descriptionTextarea.dispatchEvent(new Event('input'));
-            });
-            
-            useOriginalBtn.addEventListener('click', function() {
-                descriptionTextarea.value = originalDescription;
-                enhancementContainer.style.display = 'none';
-                showEnhancementStatus('Using original description', 'info');
-                // Trigger input event to update any validators
-                descriptionTextarea.dispatchEvent(new Event('input'));
-            });
-            
-            function showEnhancementStatus(message, type) {
-                enhancementStatus.innerHTML = `<div class="status-message ${type}">${message}</div>`;
-                setTimeout(() => {
-                    if (type !== 'loading') {
-                        enhancementStatus.innerHTML = '';
-                    }
-                }, 5000);
+            if (!description) {
+                showEnhancementStatus('Please enter a description first', 'error');
+                return;
             }
-        });
-    </script>
-    
-    <% if (result) { %>
-    <script>
-        // Store SEO data for download functionality
-        window.seoData = {
-            title: <%- JSON.stringify(result.title) %>,
-            description: <%- JSON.stringify(result.description) %>,
-            websiteUrl: <%- JSON.stringify(result.websiteUrl) %>,
-            siteLinks: <%- JSON.stringify(result.siteLinks) %>,
-            metaTags: <%- JSON.stringify(result.metaTags) %>,
-            openGraphTags: <%- JSON.stringify(result.openGraphTags) %>,
-            twitterTags: <%- JSON.stringify(result.twitterTags) %>,
-            iconData: <%- JSON.stringify(result.iconData) %>,
-            timestamp: <%- JSON.stringify(result.timestamp) %>,
-            sessionId: <%- JSON.stringify(result.sessionId) %>,
-            sessionDir: <%- JSON.stringify(result.sessionDir) %>
-        };
-        
-        async function downloadAllAssets() {
-            const button = document.querySelector('.download-button');
-            const originalText = button.innerHTML;
+            
+            // Show loading state
+            enhanceBtn.disabled = true;
+            enhanceBtn.innerHTML = `
+                <span class="loading-spinner"></span>
+                Enhancing...
+            `;
+            showEnhancementStatus('Enhancing your description with AI...', 'loading');
             
             try {
-                // Show loading state
-                button.disabled = true;
-                button.innerHTML = `
-                    <span class="loading-spinner"></span>
-                    Creating Package...
-                `;
+                const response = await fetch('/enhance-description', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ description: description })
+                });
                 
-                // Collect all necessary data from DOM
-                const completeData = {
-                    ...window.seoData,
-                    htmlHead: document.getElementById('html-head').textContent,
-                    structuredData: document.getElementById('structured-data').textContent,
-                    robotsTxt: document.getElementById('robots-txt') ? document.getElementById('robots-txt').textContent : `User-agent: *
+                const data = await response.json();
+                
+                if (data.success) {
+                    originalDescription = data.originalDescription;
+                    enhancedDescription = data.enhancedDescription;
+                    
+                    // Show the enhancement results
+                    originalDescriptionDiv.innerHTML = `
+                        <div class="description-preview original">
+                            <h5>Original:</h5>
+                            <p>${originalDescription}</p>
+                            <small>${originalDescription.length}/160 characters</small>
+                        </div>
+                    `;
+                    
+                    enhancedDescriptionDiv.innerHTML = `
+                        <div class="description-preview enhanced">
+                            <h5>AI Enhanced:</h5>
+                            <p>${enhancedDescription}</p>
+                            <small>${enhancedDescription.length}/160 characters</small>
+                        </div>
+                    `;
+                    
+                    enhancementContainer.style.display = 'block';
+                    showEnhancementStatus('Description enhanced successfully!', 'success');
+                    
+                    // Update credits display if available
+                    if (data.remainingCredits !== undefined) {
+                        const creditsElement = document.querySelector('.credits-count');
+                        if (creditsElement) {
+                            creditsElement.textContent = data.remainingCredits;
+                        }
+                    }
+                    
+                } else {
+                    throw new Error(data.error || 'Enhancement failed');
+                }
+                
+            } catch (error) {
+                console.error('Enhancement error:', error);
+                showEnhancementStatus('Failed to enhance description: ' + error.message, 'error');
+            } finally {
+                // Reset button
+                enhanceBtn.disabled = false;
+                const creditText = window.user ? ' (1 credit)' : '';
+                enhanceBtn.innerHTML = `
+                    <span class="button-icon">✨</span>
+                    Enhance with AI${creditText}
+                `;
+            }
+        });
+        
+        useEnhancedBtn.addEventListener('click', function() {
+            descriptionTextarea.value = enhancedDescription;
+            enhancementContainer.style.display = 'none';
+            showEnhancementStatus('Using AI enhanced description', 'success');
+            // Trigger input event to update any validators
+            descriptionTextarea.dispatchEvent(new Event('input'));
+        });
+        
+        useOriginalBtn.addEventListener('click', function() {
+            descriptionTextarea.value = originalDescription;
+            enhancementContainer.style.display = 'none';
+            showEnhancementStatus('Using original description', 'info');
+            // Trigger input event to update any validators
+            descriptionTextarea.dispatchEvent(new Event('input'));
+        });
+        
+        function showEnhancementStatus(message, type) {
+            enhancementStatus.innerHTML = `<div class="status-message ${type}">${message}</div>`;
+            setTimeout(() => {
+                if (type !== 'loading') {
+                    enhancementStatus.innerHTML = '';
+                }
+            }, 5000);
+        }
+    });
+</script>
+
+<% if (result) { %>
+<script>
+    // Store SEO data for download functionality
+    window.seoData = {
+        title: <%- JSON.stringify(result.title) %>,
+        description: <%- JSON.stringify(result.description) %>,
+        websiteUrl: <%- JSON.stringify(result.websiteUrl) %>,
+        siteLinks: <%- JSON.stringify(result.siteLinks) %>,
+        metaTags: <%- JSON.stringify(result.metaTags) %>,
+        openGraphTags: <%- JSON.stringify(result.openGraphTags) %>,
+        twitterTags: <%- JSON.stringify(result.twitterTags) %>,
+        iconData: <%- JSON.stringify(result.iconData) %>,
+        timestamp: <%- JSON.stringify(result.timestamp) %>,
+        sessionId: <%- JSON.stringify(result.sessionId) %>,
+        sessionDir: <%- JSON.stringify(result.sessionDir) %>
+    };
+    
+    async function downloadAllAssets() {
+        const button = document.querySelector('.download-button');
+        const originalText = button.innerHTML;
+        
+        try {
+            // Show loading state
+            button.disabled = true;
+            button.innerHTML = `
+                <span class="loading-spinner"></span>
+                Creating Package...
+            `;
+            
+            // Collect all necessary data from DOM
+            const completeData = {
+                ...window.seoData,
+                htmlHead: document.getElementById('html-head').textContent,
+                structuredData: document.getElementById('structured-data').textContent,
+                robotsTxt: document.getElementById('robots-txt') ? document.getElementById('robots-txt').textContent : `User-agent: *
 Allow: /
 
 # Sitemap
@@ -490,7 +467,7 @@ Disallow: /
 
 User-agent: DotBot
 Disallow: /`,
-                    sitemapXml: document.getElementById('sitemap-xml') ? document.getElementById('sitemap-xml').textContent : `<?xml version="1.0" encoding="UTF-8"?>
+                sitemapXml: document.getElementById('sitemap-xml') ? document.getElementById('sitemap-xml').textContent : `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>${window.seoData.websiteUrl || 'https://yourwebsite.com'}/</loc>
@@ -500,54 +477,52 @@ Disallow: /`,
     </url>
     <!-- Add more URLs as needed -->
 </urlset>`
-                };
+            };
 
-                // Send request to create and download zip
-                const response = await fetch('/download', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        seoData: completeData
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                // Create blob and download
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                
-                // Extract filename from response headers or use default
-                const contentDisposition = response.headers.get('Content-Disposition');
-                const filename = contentDisposition 
-                    ? contentDisposition.split('filename=')[1].replace(/"/g, '')
-                    : `seo-assets-${new Date().toISOString().split('T')[0]}.zip`;
-                
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-                
-                showNotification('Assets package downloaded successfully!', 'success');
-                
-            } catch (error) {
-                console.error('Download failed:', error);
-                showNotification('Download failed. Please try again.', 'error');
-            } finally {
-                // Reset button
-                button.disabled = false;
-                button.innerHTML = originalText;
+            // Send request to create and download zip
+            const response = await fetch('/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    seoData: completeData
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            
+            // Create blob and download
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            
+            // Extract filename from response headers or use default
+            const contentDisposition = response.headers.get('Content-Disposition');
+            const filename = contentDisposition 
+                ? contentDisposition.split('filename=')[1].replace(/"/g, '')
+                : `seo-assets-${new Date().toISOString().split('T')[0]}.zip`;
+            
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            showNotification('Assets package downloaded successfully!', 'success');
+            
+        } catch (error) {
+            console.error('Download failed:', error);
+            showNotification('Download failed. Please try again.', 'error');
+        } finally {
+            // Reset button
+            button.disabled = false;
+            button.innerHTML = originalText;
         }
-    </script>
-    <% } %>
-</body>
-</html>
+    }
+</script>
+<% } %>

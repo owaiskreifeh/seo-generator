@@ -1,24 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <meta name="description" content="Your SEO Generator profile and usage history">
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/auth.css">
-    <link rel="icon" type="image/png" href="/favicon.png">
-</head>
-<body>
-    <div class="container">
-        <!-- Include Shared Header -->
-        <% var subtitle = 'Your Profile & Usage History'; %>
-        <%- include('../partials/header') %>
+<% var subtitle = 'Your Profile & Usage History'; %>
 
-        <main class="main">
+<link rel="stylesheet" href="/css/auth.css">
+
+<!-- User Info Section -->
+<section class="profile-section">
             <!-- User Info Section -->
             <section class="profile-section">
-                <h2 class="section-title">👤 Account Information</h2>
+                <h2 class="section-title"><i data-feather="user" class="section-icon"></i> Account Information</h2>
                 <div class="profile-card">
                     <div class="profile-info">
                         <div class="info-item">
@@ -39,7 +27,7 @@
 
             <!-- Credits Section -->
             <section class="credits-section">
-                <h2 class="section-title">💎 Credits</h2>
+                <h2 class="section-title"><i data-feather="diamond" class="section-icon"></i> Credits</h2>
                 <div class="credits-card">
                     <div class="credits-display">
                         <div class="credits-amount">
@@ -50,9 +38,9 @@
                             <p>Each AI enhancement costs 1 credit</p>
                             <p>You can use these credits for:</p>
                             <ul>
-                                <li>✨ AI-powered description enhancement</li>
-                                <li>🎯 SEO optimization suggestions</li>
-                                <li>📝 Content improvement recommendations</li>
+                                <li><i data-feather="zap" class="benefit-icon"></i> AI-powered description enhancement</li>
+                                <li><i data-feather="target" class="benefit-icon"></i> SEO optimization suggestions</li>
+                                <li><i data-feather="edit-3" class="benefit-icon"></i> Content improvement recommendations</li>
                             </ul>
                         </div>
                     </div>
@@ -71,7 +59,7 @@
                                 value="5"
                             >
                             <button onclick="addCredits()" class="add-credits-button">
-                                <span class="button-icon">➕</span>
+                                <i data-feather="plus" class="button-icon"></i>
                                 Add Credits
                             </button>
                         </div>
@@ -82,7 +70,7 @@
 
             <!-- Usage History Section -->
             <section class="usage-section">
-                <h2 class="section-title">📊 Usage History</h2>
+                <h2 class="section-title"><i data-feather="bar-chart-2" class="section-icon"></i> Usage History</h2>
                 <div class="usage-card">
                     <% if (usageHistory && usageHistory.length > 0) { %>
                         <div class="usage-table">
@@ -121,22 +109,17 @@
             <section class="navigation-section">
                 <div class="nav-buttons">
                     <a href="/" class="nav-button">
-                        <span class="button-icon">🏠</span>
+                        <i data-feather="home" class="button-icon"></i>
                         Back to Generator
                     </a>
                     <a href="/auth/logout" class="nav-button secondary">
-                        <span class="button-icon">🚪</span>
+                        <i data-feather="log-out" class="button-icon"></i>
                         Logout
                     </a>
                 </div>
             </section>
-        </main>
-    </div>
 
-    <!-- Include Shared Footer -->
-    <%- include('../partials/footer') %>
-
-    <script>
+<script>
         async function addCredits() {
             const creditsInput = document.getElementById('creditsToAdd');
             const statusDiv = document.getElementById('addCreditsStatus');
@@ -173,11 +156,9 @@
                 }
             } catch (error) {
                 statusDiv.innerHTML = '<div class="status-message error">An error occurred. Please try again.</div>';
-            } finally {
-                button.disabled = false;
-                button.innerHTML = '<span class="button-icon">➕</span> Add Credits';
-            }
+                            } finally {
+                    button.disabled = false;
+                    button.innerHTML = '<i data-feather="plus" class="button-icon"></i> Add Credits';
+                }
         }
     </script>
-</body>
-</html>

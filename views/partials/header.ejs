@@ -2,14 +2,14 @@
 <header class="header">
     <div class="header-top">
         <div class="header-left">
-            <h1 class="header__title">🚀 SEO Generator</h1>
+            <h1 class="header__title"><i data-feather="zap" class="header-icon"></i> SEO Generator</h1>
             <p class="header__subtitle"><%= (typeof locals.subtitle !== 'undefined' ? locals.subtitle : (typeof subtitle !== 'undefined' ? subtitle : 'Generate professional SEO assets and code snippets for your website')) %></p>
         </div>
         <div class="header-right">
             <% if (typeof user !== 'undefined' && user) { %>
                 <div class="user-info">
                     <div class="user-credits">
-                        <span class="credits-icon">💎</span>
+                        <i data-feather="diamond" class="credits-icon"></i>
                         <span class="credits-count"><%= user.credits %></span>
                         <span class="credits-text">credits</span>
                     </div>
@@ -17,15 +17,15 @@
                         <span class="username"><%= user.username %></span>
                         <div class="user-dropdown">
                             <a href="/" class="dropdown-item">
-                                <span class="dropdown-icon">🏠</span>
+                                <i data-feather="home" class="dropdown-icon"></i>
                                 Home
                             </a>
                             <a href="/auth/profile" class="dropdown-item">
-                                <span class="dropdown-icon">👤</span>
+                                <i data-feather="user" class="dropdown-icon"></i>
                                 Profile
                             </a>
                             <a href="/auth/logout" class="dropdown-item">
-                                <span class="dropdown-icon">🚪</span>
+                                <i data-feather="log-out" class="dropdown-icon"></i>
                                 Logout
                             </a>
                         </div>
@@ -33,8 +33,8 @@
                 </div>
             <% } else { %>
                 <div class="auth-buttons">
-                    <a href="/auth/login" class="auth-button login">🔐 Login</a>
-                    <a href="/auth/register" class="auth-button register">✨ Register</a>
+                    <a href="/auth/login" class="auth-button login"><i data-feather="lock" class="auth-icon"></i> Login</a>
+                    <a href="/auth/register" class="auth-button register"><i data-feather="user-plus" class="auth-icon"></i> Register</a>
                 </div>
             <% } %>
         </div>

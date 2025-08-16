@@ -1,29 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
-    <meta name="description" content="Login to SEO Generator - Professional SEO asset generator">
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/auth.css">
-    <link rel="icon" type="image/png" href="/favicon.png">
-</head>
-<body>
-    <!-- Include Shared Header -->
-    <% var subtitle = 'Login to your SEO Generator account'; %>
-    <%- include('../partials/header') %>
+<% var subtitle = 'Login to your SEO Generator account'; %>
 
-    <div class="auth-container">
+<link rel="stylesheet" href="/css/auth.css">
+
+<div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <h1 class="auth-title">🚀 Welcome Back</h1>
+                <h1 class="auth-title"><i data-feather="zap" class="auth-title-icon"></i> Welcome Back</h1>
                 <p class="auth-subtitle">Login to your SEO Generator account</p>
             </div>
 
             <% if (error) { %>
                 <div class="auth-error">
-                    <span class="error-icon">⚠️</span>
+                    <i data-feather="alert-triangle" class="error-icon"></i>
                     <%= error %>
                 </div>
             <% } %>
@@ -56,7 +44,7 @@
                 </div>
 
                 <button type="submit" class="auth-button">
-                    <span class="button-icon">🔐</span>
+                    <i data-feather="log-in" class="button-icon"></i>
                     Login
                 </button>
             </form>
@@ -67,8 +55,3 @@
             </div>
         </div>
     </div>
-
-    <!-- Include Shared Footer -->
-    <%- include('../partials/footer') %>
-</body>
-</html>

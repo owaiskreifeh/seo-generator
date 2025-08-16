@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <meta name="description" content="<%= typeof description !== 'undefined' ? description : 'Professional SEO asset generator - Create meta tags, icons, and code snippets for your website' %>">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <script src="https://unpkg.com/feather-icons"></script>
+    <%- style %>
+</head>
+<body>
+    <div class="container">
+        <!-- Include Shared Header -->
+        <%- include('./partials/header') %>
+
+        <main class="main">
+            <%- body %>
+        </main>
+
+        <!-- Include Shared Footer -->
+        <%- include('./partials/footer') %>
+    </div>
+
+    <!-- Common Scripts -->
+    <script src="/js/main.js"></script>
+    
+    <!-- Initialize Feather Icons -->
+    <script>
+        // Initialize Feather Icons
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        });
+    </script>
+
+    <%- script %>
+</body>
+</html>

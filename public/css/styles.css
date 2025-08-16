@@ -5,6 +5,18 @@
     box-sizing: border-box;
 }
 
+/* Feather Icons Styling */
+[data-feather] {
+    width: 1em;
+    height: 1em;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    vertical-align: middle;
+}
+
 :root {
     /* Dark Theme Colors */
     --bg-primary: #0a0a0a;
@@ -139,6 +151,16 @@ body {
     margin-bottom: 0.5rem;
     letter-spacing: -0.025em;
     line-height: 1.2;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--accent-primary);
+    -webkit-text-fill-color: var(--accent-primary);
 }
 
 .header__subtitle {
@@ -166,6 +188,11 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+.section-title [data-feather] {
+    -webkit-text-fill-color: var(--accent-primary);
+    color: var(--accent-primary);
 }
 
 /* Form Styles */
@@ -587,7 +614,8 @@ body {
 }
 
 .button-icon {
-    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
 }
 
 /* Error Messages */
@@ -608,7 +636,9 @@ body {
 }
 
 .error-icon {
-    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--accent-error);
 }
 
 /* Results Section */
@@ -710,6 +740,15 @@ body {
     margin-bottom: 1rem;
     color: var(--text-primary);
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.summary-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--accent-primary);
 }
 
 .summary-grid {
@@ -767,7 +806,9 @@ body {
 }
 
 .code-icon {
-    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--accent-primary);
 }
 
 .code-block {
@@ -839,7 +880,9 @@ body {
 }
 
 .file-icon {
-    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--text-secondary);
 }
 
 /* Icon Grid */
@@ -956,7 +999,9 @@ body {
 }
 
 .credits-icon {
-    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    color: white;
 }
 
 .credits-count {
@@ -1034,7 +1079,9 @@ body {
 }
 
 .dropdown-icon {
-    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    color: var(--text-secondary);
 }
 
 /* Auth Buttons */
@@ -1084,6 +1131,12 @@ body {
     box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
+.auth-icon {
+    width: 1rem;
+    height: 1rem;
+    color: currentColor;
+}
+
 /* Welcome Message */
 .welcome-section {
     margin-bottom: 2rem;
@@ -1113,9 +1166,11 @@ body {
 }
 
 .welcome-icon {
-    font-size: 2.5rem;
+    width: 3rem;
+    height: 3rem;
     display: block;
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem;
+    color: var(--accent-primary);
 }
 
 .welcome-message h2 {

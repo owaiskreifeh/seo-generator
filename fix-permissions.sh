@@ -40,7 +40,7 @@ fi
 
 # Step 1: Stop and remove existing containers
 print_status "Stopping existing Docker containers..."
-docker-compose down --remove-orphans
+docker compose down --remove-orphans
 
 # Step 2: Clean up any dangling containers or images (optional)
 print_status "Cleaning up Docker resources..."
@@ -83,10 +83,10 @@ chmod -R 755 generated/
 
 # Step 4: Rebuild and start containers
 print_status "Rebuilding Docker containers..."
-docker-compose build --no-cache
+docker compose build --no-cache
 
 print_status "Starting Docker containers..."
-docker-compose up -d
+docker compose up -d
 
 # Step 5: Wait for containers to be healthy
 print_status "Waiting for containers to be healthy..."
@@ -94,18 +94,18 @@ sleep 10
 
 # Step 6: Check container status
 print_status "Checking container status..."
-if docker-compose ps | grep -q "Up"; then
+if docker compose ps | grep -q "Up"; then
     print_success "Containers are running successfully!"
 else
     print_error "Containers failed to start properly"
     print_status "Checking logs..."
-    docker-compose logs
+    docker compose logs
     exit 1
 fi
 
 # Step 7: Test file permissions inside container
 print_status "Testing file permissions inside container..."
-docker-compose exec -T seo-generator sh -c "
+docker compose exec -T seo-generator sh -c "
     echo 'Testing uploads directory permissions...' &&
     touch /app/uploads/test-permission.txt &&
     echo 'Permission test successful!' > /app/uploads/test-permission.txt &&
@@ -114,7 +114,7 @@ docker-compose exec -T seo-generator sh -c "
 " || {
     print_error "Permission test failed inside container"
     print_status "Container logs:"
-    docker-compose logs seo-generator
+    docker compose logs seo-generator
     exit 1
 }
 
@@ -122,10 +122,10 @@ docker-compose exec -T seo-generator sh -c "
 print_status "Final status check..."
 echo ""
 echo "📊 Container Status:"
-docker-compose ps
+docker compose ps
 echo ""
 echo "🔍 Recent logs:"
-docker-compose logs --tail=10 seo-generator
+docker compose logs --tail=10 seo-generator
 
 print_success "Permission fix completed successfully!"
 print_status "Your SEO Generator should now be accessible at: http://localhost:9580"
@@ -134,6 +134,6 @@ print_status "Uploads directory permissions have been fixed for user 'nextjs' (U
 echo ""
 echo "💡 Troubleshooting tips:"
 echo "  - If you still have permission issues, try: sudo chmod -R 777 uploads/ generated/"
-echo "  - Check container logs: docker-compose logs -f seo-generator"
-echo "  - Restart containers: docker-compose restart"
-echo "  - Access container shell: docker-compose exec seo-generator sh"
+echo "  - Check container logs: docker compose logs -f seo-generator"
+echo "  - Restart containers: docker compose restart"
+echo "  - Access container shell: docker compose exec seo-generator sh"

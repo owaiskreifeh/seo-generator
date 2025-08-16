@@ -58,6 +58,17 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.auth-title-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--accent-primary);
+  -webkit-text-fill-color: var(--accent-primary);
 }
 
 .auth-subtitle {
@@ -187,6 +198,11 @@
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
+}
+
+.auth-button .button-icon {
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .auth-error {
@@ -892,4 +908,35 @@
   .nav-buttons {
     flex-direction: column;
   }
+}
+
+/* Feather Icons Styles for Auth Pages */
+.benefits-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--accent-primary);
+}
+
+.benefit-check {
+  width: 1rem;
+  height: 1rem;
+  color: var(--accent-success);
+}
+
+.benefit-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--accent-primary);
+}
+
+.section-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--accent-primary);
+}
+
+.success-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--accent-success);
 }
