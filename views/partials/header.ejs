@@ -1,0 +1,42 @@
+<!-- Shared Header Component -->
+<header class="header">
+    <div class="header-top">
+        <div class="header-left">
+            <h1 class="header__title">🚀 SEO Generator</h1>
+            <p class="header__subtitle"><%= (typeof locals.subtitle !== 'undefined' ? locals.subtitle : (typeof subtitle !== 'undefined' ? subtitle : 'Generate professional SEO assets and code snippets for your website')) %></p>
+        </div>
+        <div class="header-right">
+            <% if (typeof user !== 'undefined' && user) { %>
+                <div class="user-info">
+                    <div class="user-credits">
+                        <span class="credits-icon">💎</span>
+                        <span class="credits-count"><%= user.credits %></span>
+                        <span class="credits-text">credits</span>
+                    </div>
+                    <div class="user-menu">
+                        <span class="username"><%= user.username %></span>
+                        <div class="user-dropdown">
+                            <a href="/" class="dropdown-item">
+                                <span class="dropdown-icon">🏠</span>
+                                Home
+                            </a>
+                            <a href="/auth/profile" class="dropdown-item">
+                                <span class="dropdown-icon">👤</span>
+                                Profile
+                            </a>
+                            <a href="/auth/logout" class="dropdown-item">
+                                <span class="dropdown-icon">🚪</span>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="auth-buttons">
+                    <a href="/auth/login" class="auth-button login">🔐 Login</a>
+                    <a href="/auth/register" class="auth-button register">✨ Register</a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</header>

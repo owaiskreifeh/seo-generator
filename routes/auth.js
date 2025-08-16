@@ -1,24 +1,25 @@
 const express = require('express');
 const { getDatabase } = require('../database/config');
-const { requireAuth } = require('../middleware/auth');
+const { requireAuth, optionalAuth } = require('../middleware/auth');
 
 const router = express.Router();
 const db = getDatabase();
 
 // Register page
-router.get('/register', (req, res) => {
+router.get('/register', optionalAuth, (req, res) => {
   if (req.session && req.session.userId) {
     return res.redirect('/');
   }
   res.render('auth/register', { 
     title: 'Register - SEO Generator',
     error: null,
-    success: null
+    success: null,
+    user: req.user || null
   });
 });
 
 // Register POST
-router.post('/register', async (req, res) => {
+router.post('/register', optionalAuth, async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
 
@@ -27,7 +28,8 @@ router.post('/register', async (req, res) => {
       return res.render('auth/register', {
         title: 'Register - SEO Generator',
         error: 'All fields are required',
-        success: null
+        success: null,
+        user: req.user || null
       });
     }
 
@@ -35,7 +37,8 @@ router.post('/register', async (req, res) => {
       return res.render('auth/register', {
         title: 'Register - SEO Generator',
         error: 'Passwords do not match',
-        success: null
+        success: null,
+        user: req.user || null
       });
     }
 
@@ -43,7 +46,8 @@ router.post('/register', async (req, res) => {
       return res.render('auth/register', {
         title: 'Register - SEO Generator',
         error: 'Password must be at least 6 characters long',
-        success: null
+        success: null,
+        user: req.user || null
       });
     }
 
@@ -61,31 +65,34 @@ router.post('/register', async (req, res) => {
     res.render('auth/register', {
       title: 'Register - SEO Generator',
       error: error.message,
-      success: null
+      success: null,
+      user: req.user || null
     });
   }
 });
 
 // Login page
-router.get('/login', (req, res) => {
+router.get('/login', optionalAuth, (req, res) => {
   if (req.session && req.session.userId) {
     return res.redirect('/');
   }
   res.render('auth/login', { 
     title: 'Login - SEO Generator',
-    error: null
+    error: null,
+    user: req.user || null
   });
 });
 
 // Login POST
-router.post('/login', async (req, res) => {
+router.post('/login', optionalAuth, async (req, res) => {
   try {
     const { username, password } = req.body;
 
     if (!username || !password) {
       return res.render('auth/login', {
         title: 'Login - SEO Generator',
-        error: 'Username/email and password are required'
+        error: 'Username/email and password are required',
+        user: req.user || null
       });
     }
 
@@ -100,7 +107,8 @@ router.post('/login', async (req, res) => {
     console.error('Login error:', error);
     res.render('auth/login', {
       title: 'Login - SEO Generator',
-      error: error.message
+      error: error.message,
+      user: req.user || null
     });
   }
 });

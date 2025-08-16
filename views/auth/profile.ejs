@@ -11,10 +11,9 @@
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1 class="header__title">🚀 SEO Generator</h1>
-            <p class="header__subtitle">Your Profile & Usage History</p>
-        </header>
+        <!-- Include Shared Header -->
+        <% var subtitle = 'Your Profile & Usage History'; %>
+        <%- include('../partials/header') %>
 
         <main class="main">
             <!-- User Info Section -->
@@ -102,23 +101,23 @@
                                         <span class="credits-used">-<%= usage.credits_used %></span>
                                     </div>
                                     <div class="usage-cell">
-                                        <span class="usage-description"><%= usage.description || 'N/A' %></span>
+                                        <span class="usage-description"><%= usage.description %></span>
                                     </div>
                                     <div class="usage-cell">
-                                        <span class="usage-date"><%= new Date(usage.created_at).toLocaleString() %></span>
+                                        <span class="usage-date"><%= new Date(usage.created_at).toLocaleDateString() %></span>
                                     </div>
                                 </div>
-                            <% }) %>
+                            <% }); %>
                         </div>
                     <% } else { %>
                         <div class="no-usage">
-                            <p>No usage history yet. Start using AI enhancements to see your activity here!</p>
+                            <p>No usage history yet. Start generating SEO assets to see your activity here!</p>
                         </div>
                     <% } %>
                 </div>
             </section>
 
-            <!-- Navigation -->
+            <!-- Navigation Section -->
             <section class="navigation-section">
                 <div class="nav-buttons">
                     <a href="/" class="nav-button">
@@ -132,11 +131,10 @@
                 </div>
             </section>
         </main>
-
-        <footer class="footer">
-            <p>&copy; 2024 SEO Generator. Manage your account and track usage.</p>
-        </footer>
     </div>
+
+    <!-- Include Shared Footer -->
+    <%- include('../partials/footer') %>
 
     <script>
         async function addCredits() {
@@ -145,51 +143,40 @@
             const button = document.querySelector('.add-credits-button');
             
             const credits = parseInt(creditsInput.value);
-            if (!credits || credits < 1) {
-                showStatus('Please enter a valid number of credits', 'error');
+            if (!credits || credits < 1 || credits > 100) {
+                statusDiv.innerHTML = '<div class="status-message error">Please enter a valid number between 1 and 100</div>';
                 return;
             }
 
+            button.disabled = true;
+            button.innerHTML = '<span class="loading-spinner"></span> Adding...';
+            statusDiv.innerHTML = '<div class="status-message loading">Adding credits...</div>';
+
             try {
-                button.disabled = true;
-                button.innerHTML = '<span class="loading-spinner"></span> Adding...';
-                
                 const response = await fetch('/auth/add-credits', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ credits: credits })
+                    body: JSON.stringify({ credits })
                 });
 
-                const data = await response.json();
-                
-                if (data.success) {
-                    showStatus(data.message, 'success');
-                    // Update the displayed credits
-                    document.querySelector('.credits-number').textContent = data.credits;
-                    // Reload page after a short delay to show updated history
+                const result = await response.json();
+
+                if (result.success) {
+                    statusDiv.innerHTML = '<div class="status-message success">Credits added successfully! Refreshing page...</div>';
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2000);
+                    }, 1500);
                 } else {
-                    showStatus(data.error, 'error');
+                    statusDiv.innerHTML = `<div class="status-message error">${result.message || 'Failed to add credits'}</div>`;
                 }
             } catch (error) {
-                console.error('Error adding credits:', error);
-                showStatus('Failed to add credits. Please try again.', 'error');
+                statusDiv.innerHTML = '<div class="status-message error">An error occurred. Please try again.</div>';
             } finally {
                 button.disabled = false;
                 button.innerHTML = '<span class="button-icon">➕</span> Add Credits';
             }
-        }
-
-        function showStatus(message, type) {
-            const statusDiv = document.getElementById('addCreditsStatus');
-            statusDiv.innerHTML = `<div class="status-message ${type}">${message}</div>`;
-            setTimeout(() => {
-                statusDiv.innerHTML = '';
-            }, 5000);
         }
     </script>
 </body>

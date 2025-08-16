@@ -1,0 +1,52 @@
+<!-- Shared Navigation Component -->
+<nav class="main-navigation">
+    <div class="nav-container">
+        <div class="nav-brand">
+            <a href="/" class="nav-logo">
+                <span class="logo-icon">🚀</span>
+                <span class="logo-text">SEO Generator</span>
+            </a>
+        </div>
+        
+        <div class="nav-menu">
+            <a href="/" class="nav-link <%= currentPage === 'home' ? 'active' : '' %>">
+                <span class="nav-icon">🏠</span>
+                Home
+            </a>
+            
+            <% if (user) { %>
+                <a href="/auth/profile" class="nav-link <%= currentPage === 'profile' ? 'active' : '' %>">
+                    <span class="nav-icon">👤</span>
+                    Profile
+                </a>
+            <% } %>
+        </div>
+        
+        <div class="nav-auth">
+            <% if (user) { %>
+                <div class="user-nav-info">
+                    <span class="user-credits-nav">
+                        <span class="credits-icon">💎</span>
+                        <span class="credits-count"><%= user.credits %></span>
+                    </span>
+                    <span class="username-nav"><%= user.username %></span>
+                    <a href="/auth/logout" class="nav-logout">
+                        <span class="nav-icon">🚪</span>
+                        Logout
+                    </a>
+                </div>
+            <% } else { %>
+                <div class="auth-nav-buttons">
+                    <a href="/auth/login" class="nav-auth-btn login">
+                        <span class="nav-icon">🔐</span>
+                        Login
+                    </a>
+                    <a href="/auth/register" class="nav-auth-btn register">
+                        <span class="nav-icon">✨</span>
+                        Register
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</nav>
