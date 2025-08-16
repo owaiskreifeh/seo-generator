@@ -21,6 +21,12 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001 && \
     chown -R nextjs:nodejs /app
 
+# Ensure uploads and generated directories have proper permissions
+RUN chmod -R 755 /app/uploads && \
+    chmod -R 755 /app/generated && \
+    chown -R nextjs:nodejs /app/uploads && \
+    chown -R nextjs:nodejs /app/generated
+
 # Switch to the non-root user
 USER nextjs
 
