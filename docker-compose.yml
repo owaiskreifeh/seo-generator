@@ -1,0 +1,47 @@
+services:
+  seo-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: seo-generator-app
+    ports:
+      - "9580:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Add your environment variables here
+      # - GENAI_API_KEY=${GENAI_API_KEY}
+      # - OTHER_ENV_VAR=${OTHER_ENV_VAR}
+    volumes:
+      # Persistent storage for uploads and generated files
+      - ./uploads:/app/uploads
+      - ./generated:/app/generated
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (res) => { if (res.statusCode === 200 || res.statusCode === 404) process.exit(0); else process.exit(1); }).on('error', () => process.exit(1));"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+# Optional: Add a reverse proxy (uncomment if needed)
+# nginx:
+#   image: nginx:alpine
+#   container_name: seo-generator-nginx
+#   ports:
+#     - "80:80"
+#     - "443:443"
+#   volumes:
+#     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#     - ./ssl:/etc/ssl:ro
+#   depends_on:
+#     - seo-generator
+#   restart: unless-stopped
+
+volumes:
+  uploads_data:
+  generated_data:
+
+networks:
+  default:
+    name: seo-generator-network
