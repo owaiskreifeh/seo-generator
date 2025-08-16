@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <meta name="description" content="Login to SEO Generator - Professional SEO asset generator">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">🚀 Welcome Back</h1>
+                <p class="auth-subtitle">Login to your SEO Generator account</p>
+            </div>
+
+            <% if (error) { %>
+                <div class="auth-error">
+                    <span class="error-icon">⚠️</span>
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form method="POST" action="/auth/login" class="auth-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username or Email</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input" 
+                        placeholder="Enter your username or email"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <button type="submit" class="auth-button">
+                    <span class="button-icon">🔐</span>
+                    Login
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="/auth/register" class="auth-link">Register here</a></p>
+                <p><a href="/" class="auth-link">← Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

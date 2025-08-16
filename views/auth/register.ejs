@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <meta name="description" content="Register for SEO Generator - Professional SEO asset generator">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">🚀 Join SEO Generator</h1>
+                <p class="auth-subtitle">Create your account and get 10 free credits</p>
+            </div>
+
+            <% if (error) { %>
+                <div class="auth-error">
+                    <span class="error-icon">⚠️</span>
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <% if (success) { %>
+                <div class="auth-success">
+                    <span class="success-icon">✅</span>
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <form method="POST" action="/auth/register" class="auth-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        class="form-input" 
+                        placeholder="Choose a username"
+                        required
+                        autocomplete="username"
+                        minlength="3"
+                        maxlength="30"
+                    >
+                    <div class="form-hint">3-30 characters, letters, numbers, and underscores only</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="Enter your email address"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        class="form-input" 
+                        placeholder="Create a password"
+                        required
+                        autocomplete="new-password"
+                        minlength="6"
+                    >
+                    <div class="form-hint">Minimum 6 characters</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        class="form-input" 
+                        placeholder="Confirm your password"
+                        required
+                        autocomplete="new-password"
+                        minlength="6"
+                    >
+                </div>
+
+                <div class="auth-benefits">
+                    <h3>🎁 What you get:</h3>
+                    <ul>
+                        <li>✅ 10 free credits to start</li>
+                        <li>✅ AI-powered description enhancement</li>
+                        <li>✅ Professional SEO asset generation</li>
+                        <li>✅ Usage history tracking</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="auth-button">
+                    <span class="button-icon">✨</span>
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="/auth/login" class="auth-link">Login here</a></p>
+                <p><a href="/" class="auth-link">← Back to Home</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

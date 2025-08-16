@@ -11,11 +11,55 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1 class="header__title">🚀 SEO Generator</h1>
-            <p class="header__subtitle">Generate professional SEO assets and code snippets for your website</p>
+            <div class="header-top">
+                <div class="header-left">
+                    <h1 class="header__title">🚀 SEO Generator</h1>
+                    <p class="header__subtitle">Generate professional SEO assets and code snippets for your website</p>
+                </div>
+                <div class="header-right">
+                    <% if (user) { %>
+                        <div class="user-info">
+                            <div class="user-credits">
+                                <span class="credits-icon">💎</span>
+                                <span class="credits-count"><%= user.credits %></span>
+                                <span class="credits-text">credits</span>
+                            </div>
+                            <div class="user-menu">
+                                <span class="username"><%= user.username %></span>
+                                <div class="user-dropdown">
+                                    <a href="/auth/profile" class="dropdown-item">
+                                        <span class="dropdown-icon">👤</span>
+                                        Profile
+                                    </a>
+                                    <a href="/auth/logout" class="dropdown-item">
+                                        <span class="dropdown-icon">🚪</span>
+                                        Logout
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div class="auth-buttons">
+                            <a href="/auth/login" class="auth-button login">🔐 Login</a>
+                            <a href="/auth/register" class="auth-button register">✨ Register</a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
         </header>
 
         <main class="main">
+            <!-- Welcome Message -->
+            <% if (welcome && user) { %>
+                <section class="welcome-section">
+                    <div class="welcome-message">
+                        <span class="welcome-icon">🎉</span>
+                        <h2>Welcome to SEO Generator, <%= user.username %>!</h2>
+                        <p>You have <strong><%= user.credits %> credits</strong> to start with. Each AI enhancement costs 1 credit.</p>
+                    </div>
+                </section>
+            <% } %>
+
             <!-- Input Form -->
             <section class="form-section">
                 <h2 class="section-title">Website Information</h2>
@@ -56,6 +100,9 @@
                             <button type="button" id="enhanceBtn" class="enhance-button">
                                 <span class="button-icon">✨</span>
                                 Enhance with AI
+                                <% if (user) { %>
+                                    <span class="credit-cost">(1 credit)</span>
+                                <% } %>
                             </button>
                         </div>
                         <div id="enhancementContainer" class="enhancement-container" style="display: none;">
@@ -309,6 +356,9 @@
     <script src="/js/main.js"></script>
     
     <script>
+        // User data for JavaScript
+        window.user = <%- user ? JSON.stringify(user) : 'null' %>;
+        
         // AI Description Enhancement functionality
         document.addEventListener('DOMContentLoaded', function() {
             const enhanceBtn = document.getElementById('enhanceBtn');
@@ -374,6 +424,14 @@
                         enhancementContainer.style.display = 'block';
                         showEnhancementStatus('Description enhanced successfully!', 'success');
                         
+                        // Update credits display if available
+                        if (data.remainingCredits !== undefined) {
+                            const creditsElement = document.querySelector('.credits-count');
+                            if (creditsElement) {
+                                creditsElement.textContent = data.remainingCredits;
+                            }
+                        }
+                        
                     } else {
                         throw new Error(data.error || 'Enhancement failed');
                     }
@@ -384,9 +442,10 @@
                 } finally {
                     // Reset button
                     enhanceBtn.disabled = false;
+                    const creditText = window.user ? ' (1 credit)' : '';
                     enhanceBtn.innerHTML = `
                         <span class="button-icon">✨</span>
-                        Enhance with AI
+                        Enhance with AI${creditText}
                     `;
                 }
             });

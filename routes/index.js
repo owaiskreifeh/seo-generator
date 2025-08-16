@@ -7,8 +7,11 @@ const seoGenerator = require('../utils/seoGenerator');
 const iconGenerator = require('../utils/iconGenerator');
 const zipGenerator = require('../utils/zipGenerator');
 const ai = require('../utils/ai');
+const { optionalAuth, requireCredits } = require('../middleware/auth');
+const { getDatabase } = require('../database/config');
 
 const router = express.Router();
+const db = getDatabase();
 
 // Generate unique session ID for concurrent user isolation
 const generateSessionId = () => {
@@ -105,19 +108,23 @@ const upload = multer({
   }
 });
 
-// Home page
-router.get('/', (req, res) => {
+// Home page with optional auth
+router.get('/', optionalAuth, (req, res) => {
+  const welcome = req.query.welcome === 'true';
   res.render('index', { 
     title: 'SEO Generator',
     result: null,
-    error: null
+    error: null,
+    user: req.user,
+    welcome
   });
 });
 
-// AI description enhancement endpoint
-router.post('/enhance-description', async (req, res) => {
+// AI description enhancement endpoint with credit system
+router.post('/enhance-description', requireCredits(1), async (req, res) => {
   try {
     const { description } = req.body;
+    const userId = req.session.userId;
     
     if (!description || !description.trim()) {
       return res.status(400).json({ 
@@ -126,17 +133,33 @@ router.post('/enhance-description', async (req, res) => {
       });
     }
 
+    // Deduct credits
+    const remainingCredits = await db.updateCredits(userId, 1);
+    
+    // Log usage
+    await db.logUsage(userId, 'AI Enhancement', 1, `Enhanced description: "${description.substring(0, 50)}..."`);
+
     // Use the existing AI enhancement method
     const enhancedDescription = await ai.enhanceDescription(description.trim());
     
     res.json({
       success: true,
       originalDescription: description.trim(),
-      enhancedDescription: enhancedDescription.trim()
+      enhancedDescription: enhancedDescription.trim(),
+      remainingCredits: remainingCredits
     });
 
   } catch (error) {
     console.error('AI Enhancement error:', error);
+    
+    // If it's a credit error, return specific message
+    if (error.message === 'Insufficient credits') {
+      return res.status(402).json({
+        success: false,
+        error: 'Insufficient credits. Please add more credits to use AI enhancement.'
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'Failed to enhance description. Please try again.'
@@ -157,7 +180,8 @@ router.post('/generate', upload.single('siteIcon'), async (req, res) => {
       return res.render('index', {
         title: 'SEO Generator',
         result: null,
-        error: 'Please provide site title, description, and website URL.'
+        error: 'Please provide site title, description, and website URL.',
+        user: req.user
       });
     }
 
@@ -197,7 +221,8 @@ router.post('/generate', upload.single('siteIcon'), async (req, res) => {
     res.render('index', {
       title: 'SEO Generator',
       result: seoData,
-      error: null
+      error: null,
+      user: req.user
     });
 
   } catch (error) {
@@ -225,7 +250,8 @@ router.post('/generate', upload.single('siteIcon'), async (req, res) => {
     res.render('index', {
       title: 'SEO Generator',
       result: null,
-      error: 'An error occurred while generating SEO assets. Please try again.'
+      error: 'An error occurred while generating SEO assets. Please try again.',
+      user: req.user
     });
   }
 });

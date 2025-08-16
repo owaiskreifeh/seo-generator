@@ -1,243 +1,216 @@
-# SEO Generator
+# SEO Generator with Authentication & Credit System
 
-A professional SEO asset generator that creates comprehensive meta tags, icons, structured data, and other SEO essentials from user inputs using AI-powered optimization.
+A professional SEO asset generator that creates meta tags, icons, and code snippets from user inputs. Now with user authentication and a credit-based AI enhancement system.
 
 ## Features
 
-🚀 **AI-Powered SEO Generation**
-- Automatic meta tag generation using Google's Gemini AI
-- Smart keyword optimization and content suggestions
-- SEO-friendly descriptions and titles
+### Core SEO Generation
+- ✅ Generate comprehensive meta tags
+- ✅ Open Graph and Twitter Card tags
+- ✅ Structured data (JSON-LD)
+- ✅ Complete HTML head section
+- ✅ robots.txt and sitemap.xml
+- ✅ Icon generation (favicons, app icons, social media images)
+- ✅ Download all assets as ZIP file
 
-🎨 **Icon & Asset Generation**
-- Complete favicon package (16x16 to 512x512)
-- Apple touch icons and PWA icons
-- Open Graph and Twitter Card images
-- Browser configuration files
+### Authentication System
+- ✅ User registration and login
+- ✅ Session management
+- ✅ Password hashing with bcrypt
+- ✅ User profiles with usage history
 
-📊 **Structured Data & Meta Tags**
-- Schema.org structured data (JSON-LD)
-- Open Graph protocol tags
-- Twitter Card meta tags
-- Standard HTML meta tags
-- Robots.txt generation
+### Credit System
+- ✅ 10 free credits for new users
+- ✅ 1 credit per AI enhancement
+- ✅ Credit balance tracking
+- ✅ Usage history logging
+- ✅ Demo credit addition (for testing)
 
-🔧 **Additional SEO Tools**
-- XML sitemap generation
-- Web App Manifest for PWAs
-- Browser configuration files
-- Complete downloadable package
+### Database Support
+- ✅ SQLite (development)
+- ✅ PostgreSQL (production)
+- ✅ Automatic database switching
 
-⚡ **Performance & Security**
-- Session-based file management
-- Rate limiting and security headers
-- Automatic cleanup of old sessions
-- Compression and caching
+## Quick Start
 
-## Prerequisites
+### Prerequisites
+- Node.js 16+ 
+- npm or yarn
+- Docker (optional, for production)
 
-Before you begin, ensure you have the following installed:
-- **Node.js** (version 16 or higher)
-- **npm** (comes with Node.js)
-- **Google AI API Key** (Gemini)
+### Local Development
 
-## Installation
-
-1. **Clone the repository**
+1. **Clone and install dependencies**
    ```bash
-   git clone <your-repository-url>
+   git clone <repository-url>
    cd seo-generator
-   ```
-
-2. **Install dependencies**
-   ```bash
    npm install
    ```
 
-3. **Environment setup**
-   Create a `.env` file in the root directory:
-   ```env
-   # Required: Google AI API Key for Gemini
-   GOOGLE_API_KEY=your_google_ai_api_key_here
-   
-   # Optional: Server configuration
-   PORT=3000
-   NODE_ENV=production
-   ```
-
-4. **Create required directories**
-   The application will automatically create necessary directories, but you can pre-create them:
+2. **Set up environment variables**
    ```bash
-   mkdir -p generated/sessions
-   mkdir -p uploads
+   cp .env.example .env
+   # Edit .env with your configuration
    ```
 
-## Getting Your Google AI API Key
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-1. Visit the [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Sign in with your Google account
-3. Create a new API key
-4. Copy the key and add it to your `.env` file
+4. **Access the application**
+   - Open http://localhost:3000
+   - Register a new account
+   - Start generating SEO assets!
 
-## Running the Application
+### Production with Docker
 
-### Development Mode
-```bash
-npm run dev
-```
-This starts the server with nodemon for automatic restarts on file changes.
+1. **Build and run with Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
 
-### Production Mode
-```bash
-npm start
-```
+2. **Access the application**
+   - Open http://localhost:3000
+   - The app will use PostgreSQL and Redis
 
-The server will start on `http://localhost:3000` (or your specified PORT).
+## Environment Variables
 
-## Usage
+Create a `.env` file in the root directory:
 
-1. **Access the application**
-   Open your browser and navigate to `http://localhost:3000`
+```env
+# Database
+DATABASE_URL=postgresql://seo_user:seo_password_2024@localhost:5432/seo_generator
+NODE_ENV=production
 
-2. **Fill out the SEO form**
-   - Enter your website title, description, and keywords
-   - Provide your website URL and author information
-   - Upload a logo/image for social media cards (optional)
-   - Add any additional custom meta tags
+# Session
+SESSION_SECRET=your-super-secret-session-key-change-in-production
 
-3. **Generate SEO assets**
-   - Click "Generate SEO Package"
-   - The AI will optimize your content and generate all assets
-   - Preview the generated meta tags and structured data
+# Google AI (for description enhancement)
+GENAI_API_KEY=your-google-ai-api-key
 
-4. **Download your package**
-   - Download the complete ZIP file containing all SEO assets
-   - Extract and integrate the files into your website
-
-## Generated Files Structure
-
-```
-your-session-id/
-├── complete.html           # Complete HTML with all meta tags
-├── meta-tags.html         # Standard meta tags
-├── opengraph-tags.html    # Open Graph protocol tags
-├── twitter-tags.html      # Twitter Card tags
-├── structured-data.json   # Schema.org JSON-LD
-├── sitemap.xml           # XML sitemap
-├── robots.txt            # Robots.txt file
-├── site.webmanifest      # PWA manifest
-├── browserconfig.xml     # Browser configuration
-└── icons/                # Complete favicon package
-    ├── favicon.ico
-    ├── favicon-16x16.png
-    ├── favicon-32x32.png
-    ├── apple-touch-icon.png
-    ├── android-chrome-192x192.png
-    ├── android-chrome-512x512.png
-    └── og-image.png      # Social media image
+# Optional: Redis for session storage
+REDIS_URL=redis://localhost:6379
 ```
 
-## Project Structure
+## Database Setup
 
-```
-seo-generator/
-├── server.js              # Express server configuration
-├── package.json           # Dependencies and scripts
-├── .env                   # Environment variables (create this)
-├── .gitignore            # Git ignore rules
-├── public/               # Static assets
-│   ├── css/
-│   └── js/
-├── views/                # EJS templates
-│   ├── index.ejs         # Main form page
-│   └── error.ejs         # Error page
-├── routes/               # Express routes
-│   └── index.js          # Main application routes
-├── utils/                # Core utilities
-│   ├── ai.js             # Google AI integration
-│   ├── seoGenerator.js   # SEO content generation
-│   ├── iconGenerator.js  # Icon and image processing
-│   └── zipGenerator.js   # ZIP package creation
-├── generated/            # Generated files (auto-created)
-│   └── sessions/         # Session-based storage
-└── uploads/              # User uploads (auto-created)
-```
+### Development (SQLite)
+- Automatically creates `database/users.db`
+- No additional setup required
+
+### Production (PostgreSQL)
+1. **Using Docker Compose (recommended)**
+   ```bash
+   docker-compose up -d postgres
+   ```
+
+2. **Manual PostgreSQL setup**
+   ```sql
+   CREATE DATABASE seo_generator;
+   CREATE USER seo_user WITH PASSWORD 'seo_password_2024';
+   GRANT ALL PRIVILEGES ON DATABASE seo_generator TO seo_user;
+   ```
 
 ## API Endpoints
 
-- `GET /` - Main application page
-- `POST /generate` - Generate SEO package
-- `GET /download/:sessionId` - Download generated ZIP package
-- `GET /generated/sessions/:sessionId/*` - Serve session files
+### Authentication
+- `GET /auth/register` - Registration page
+- `POST /auth/register` - Create new account
+- `GET /auth/login` - Login page
+- `POST /auth/login` - Authenticate user
+- `GET /auth/logout` - Logout user
+- `GET /auth/profile` - User profile (requires auth)
 
-## Configuration Options
+### SEO Generation
+- `GET /` - Main application
+- `POST /generate` - Generate SEO assets
+- `POST /enhance-description` - AI enhancement (requires auth + credits)
+- `POST /download` - Download ZIP file
 
-### Environment Variables
+### Credit Management
+- `POST /auth/add-credits` - Add demo credits (requires auth)
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `GOOGLE_API_KEY` | Yes | - | Google AI API key for content generation |
-| `PORT` | No | 3000 | Server port number |
-| `NODE_ENV` | No | development | Environment mode |
+## Credit System
 
-### Rate Limiting
+### How it works
+- New users get 10 free credits
+- Each AI description enhancement costs 1 credit
+- Credits are deducted before processing
+- Usage is logged with timestamps
+- Insufficient credits show appropriate error messages
 
-The application includes rate limiting:
-- 100 requests per 15 minutes per IP
-- Protects against abuse and excessive API usage
+### Adding Credits
+For demo purposes, users can add credits from their profile page. In production, you would integrate with a payment system.
 
-### Session Management
+## File Structure
 
-- Sessions automatically expire after 2 hours
-- Old files are cleaned up automatically
-- Each user gets isolated session storage
+```
+seo-generator/
+├── database/           # Database modules
+│   ├── database.js     # SQLite implementation
+│   ├── postgres.js     # PostgreSQL implementation
+│   ├── config.js       # Database configuration
+│   └── init.sql        # PostgreSQL schema
+├── middleware/         # Authentication middleware
+├── routes/            # Application routes
+│   ├── index.js       # Main routes
+│   └── auth.js        # Authentication routes
+├── views/             # EJS templates
+│   ├── index.ejs      # Main page
+│   └── auth/          # Authentication pages
+├── public/            # Static assets
+├── utils/             # Utility functions
+├── docker-compose.yml # Docker configuration
+└── server.js          # Main application
+```
 
-## Troubleshooting
+## Security Features
 
-### Common Issues
+- ✅ Password hashing with bcrypt
+- ✅ Session-based authentication
+- ✅ CSRF protection
+- ✅ Rate limiting
+- ✅ Helmet.js security headers
+- ✅ Input validation and sanitization
+- ✅ SQL injection prevention
 
-1. **"API key not found" error**
-   - Ensure your `.env` file contains a valid `GOOGLE_API_KEY`
-   - Restart the server after adding the API key
+## Deployment
 
-2. **"Module not found" errors**
-   - Run `npm install` to ensure all dependencies are installed
-   - Check that you're in the correct directory
+### Docker (Recommended)
+```bash
+# Production
+docker-compose -f docker-compose.yml up -d
 
-3. **Port already in use**
-   - Change the PORT in your `.env` file
-   - Kill any existing processes using the port
+# Development
+docker-compose -f docker-compose.dev.yml up -d
+```
 
-4. **File upload issues**
-   - Ensure the `uploads/` directory exists and is writable
-   - Check file size limits (default: 5MB)
-
-### Development Tips
-
-- Use `npm run dev` for development with auto-restart
-- Check console logs for detailed error information
-- Generated files are stored in session-specific directories
-- Upload a high-quality logo (minimum 192x192px) for best results
+### Manual Deployment
+1. Set up PostgreSQL database
+2. Configure environment variables
+3. Install dependencies: `npm install --production`
+4. Start the application: `npm start`
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin feature-name`
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
 5. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the package.json file for details.
+MIT License - see LICENSE file for details
 
 ## Support
 
-If you encounter any issues or have questions:
-1. Check the troubleshooting section above
-2. Review the console logs for error details
-3. Ensure your Google AI API key is valid and has quota remaining
+For issues and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Review the code comments
 
 ---
 
-**Note**: This application uses Google's Gemini AI for content generation. Ensure you have sufficient API quota and follow Google's usage policies.
+**Note**: This application uses Google's Generative AI for description enhancement. Make sure to set up your `GENAI_API_KEY` in the environment variables.

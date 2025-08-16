@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <meta name="description" content="Your SEO Generator profile and usage history">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="header__title">🚀 SEO Generator</h1>
+            <p class="header__subtitle">Your Profile & Usage History</p>
+        </header>
+
+        <main class="main">
+            <!-- User Info Section -->
+            <section class="profile-section">
+                <h2 class="section-title">👤 Account Information</h2>
+                <div class="profile-card">
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <span class="info-label">Username:</span>
+                            <span class="info-value"><%= user.username %></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value"><%= user.email %></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Member since:</span>
+                            <span class="info-value"><%= new Date(user.created_at).toLocaleDateString() %></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Credits Section -->
+            <section class="credits-section">
+                <h2 class="section-title">💎 Credits</h2>
+                <div class="credits-card">
+                    <div class="credits-display">
+                        <div class="credits-amount">
+                            <span class="credits-number"><%= user.credits %></span>
+                            <span class="credits-label">Available Credits</span>
+                        </div>
+                        <div class="credits-info">
+                            <p>Each AI enhancement costs 1 credit</p>
+                            <p>You can use these credits for:</p>
+                            <ul>
+                                <li>✨ AI-powered description enhancement</li>
+                                <li>🎯 SEO optimization suggestions</li>
+                                <li>📝 Content improvement recommendations</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Add Credits Form (for demo purposes) -->
+                    <div class="add-credits-form">
+                        <h3>Add Demo Credits</h3>
+                        <div class="form-row">
+                            <input 
+                                type="number" 
+                                id="creditsToAdd" 
+                                class="form-input" 
+                                placeholder="Number of credits"
+                                min="1"
+                                max="100"
+                                value="5"
+                            >
+                            <button onclick="addCredits()" class="add-credits-button">
+                                <span class="button-icon">➕</span>
+                                Add Credits
+                            </button>
+                        </div>
+                        <div id="addCreditsStatus" class="status-message"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Usage History Section -->
+            <section class="usage-section">
+                <h2 class="section-title">📊 Usage History</h2>
+                <div class="usage-card">
+                    <% if (usageHistory && usageHistory.length > 0) { %>
+                        <div class="usage-table">
+                            <div class="usage-header">
+                                <div class="usage-cell">Action</div>
+                                <div class="usage-cell">Credits Used</div>
+                                <div class="usage-cell">Description</div>
+                                <div class="usage-cell">Date</div>
+                            </div>
+                            <% usageHistory.forEach(usage => { %>
+                                <div class="usage-row">
+                                    <div class="usage-cell">
+                                        <span class="usage-action"><%= usage.action %></span>
+                                    </div>
+                                    <div class="usage-cell">
+                                        <span class="credits-used">-<%= usage.credits_used %></span>
+                                    </div>
+                                    <div class="usage-cell">
+                                        <span class="usage-description"><%= usage.description || 'N/A' %></span>
+                                    </div>
+                                    <div class="usage-cell">
+                                        <span class="usage-date"><%= new Date(usage.created_at).toLocaleString() %></span>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="no-usage">
+                            <p>No usage history yet. Start using AI enhancements to see your activity here!</p>
+                        </div>
+                    <% } %>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <section class="navigation-section">
+                <div class="nav-buttons">
+                    <a href="/" class="nav-button">
+                        <span class="button-icon">🏠</span>
+                        Back to Generator
+                    </a>
+                    <a href="/auth/logout" class="nav-button secondary">
+                        <span class="button-icon">🚪</span>
+                        Logout
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 SEO Generator. Manage your account and track usage.</p>
+        </footer>
+    </div>
+
+    <script>
+        async function addCredits() {
+            const creditsInput = document.getElementById('creditsToAdd');
+            const statusDiv = document.getElementById('addCreditsStatus');
+            const button = document.querySelector('.add-credits-button');
+            
+            const credits = parseInt(creditsInput.value);
+            if (!credits || credits < 1) {
+                showStatus('Please enter a valid number of credits', 'error');
+                return;
+            }
+
+            try {
+                button.disabled = true;
+                button.innerHTML = '<span class="loading-spinner"></span> Adding...';
+                
+                const response = await fetch('/auth/add-credits', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ credits: credits })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus(data.message, 'success');
+                    // Update the displayed credits
+                    document.querySelector('.credits-number').textContent = data.credits;
+                    // Reload page after a short delay to show updated history
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    showStatus(data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error adding credits:', error);
+                showStatus('Failed to add credits. Please try again.', 'error');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<span class="button-icon">➕</span> Add Credits';
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('addCreditsStatus');
+            statusDiv.innerHTML = `<div class="status-message ${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

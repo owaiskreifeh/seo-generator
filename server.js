@@ -4,7 +4,9 @@ const path = require('path');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const session = require('express-session');
 const routes = require('./routes');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +34,18 @@ app.use(limiter);
 // Compression middleware
 app.use(compression());
 
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
 // Set view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -57,6 +71,7 @@ app.use('/generated/sessions/:sessionId', (req, res, next) => {
 });
 
 // Routes
+app.use('/auth', authRoutes);
 app.use('/', routes);
 
 // Error handling middleware
